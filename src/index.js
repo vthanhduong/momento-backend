@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
   })
 });
 
-app.use('user', userRoute);
+app.use('/user', userRoute);
 
 // Initialize server
 app.listen(5000, () => {
