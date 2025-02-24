@@ -4,6 +4,8 @@ const express = require("express");
 // Initialize Express
 const app = express();
 
+const userRoute = require('./routes/user.route');
+
 // Create GET request
 app.get("/", (req, res) => {
   res.status(400).json({
@@ -11,6 +13,8 @@ app.get("/", (req, res) => {
     message: "Momento",
   })
 });
+
+app.use('user', userRoute);
 
 // Initialize server
 app.listen(5000, () => {
