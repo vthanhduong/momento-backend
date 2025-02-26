@@ -1,6 +1,7 @@
-require('dotenv').config({path: 'src/.env'});
+require('dotenv').config();
 // Add Express
 const express = require("express");
+const bodyParser = require("body-parser")
 // Initialize Express
 const app = express();
 const mysql = require('mysql2');
@@ -31,6 +32,7 @@ app.get("/", (req, res) => {
   });
 });
 
+app.use(bodyParser.json());
 app.use('/user', userRoute);
 
 // Initialize server

@@ -3,15 +3,19 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@prisma/client": "^6.4.1",
+    "body-parser": "^1.20.3",
     "express": "^4.21.2",
     "global": "^4.4.0",
+    "prisma": "^6.4.1",
     "vercel": "^41.2.0"
   },
   "devDependencies": {
