@@ -3,26 +3,9 @@ const express = require("express");
 const router = express();
 
 router.get('/', controller.index);
-
-router.post('/', (req, res) => {
-    res.status(400).send({
-        status: "success",
-        message: "User created successfully."
-    })
-});
-
-router.put('/', (req, res) => {
-    res.status(400).send({
-        status: "success",
-        message: "User updated successfully."
-    })
-});
-
-router.delete('/', (req, res) => {
-    res.status(400).send({
-        status: "success",
-        message: "User deleted successfully."
-    })
-});
+router.get('/:id', controller.findById);
+router.post('/', controller.post);
+router.put('/:id', controller.put);
+router.delete('/:id', controller.delete);
 
 module.exports = router;
