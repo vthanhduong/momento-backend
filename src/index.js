@@ -21,14 +21,14 @@ app.get("/", (req, res) => {
   var data = '';
   const conn = mysql.createConnection(config);
   conn.execute('SELECT VERSION() AS version', [], (err, result) => {
-    if (err) throw err;
-    data = result[0].version;
+      if (err) throw err;
+      data = result[0].version;
+      conn.end();
+      res.status(400).json({
+      status: "success",
+      message: data,
+      })
   });
-  conn.end();
-  res.status(400).json({
-    status: "success",
-    message: data,
-  })
 });
 
 app.use('/user', userRoute);
