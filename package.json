@@ -10,8 +10,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@prisma/client": "^6.4.1",
     "express": "^4.21.2",
     "global": "^4.4.0",
+    "prisma": "^6.4.1",
     "vercel": "^41.2.0"
   },
   "devDependencies": {

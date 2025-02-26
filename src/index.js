@@ -1,4 +1,4 @@
-require('dotenv').config({path: 'src/.env'});
+require('dotenv').config();
 // Add Express
 const express = require("express");
 // Initialize Express

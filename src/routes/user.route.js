@@ -1,17 +1,8 @@
+const controller = require("../controllers/user.controller");
 const express = require("express");
 const router = express();
 
-router.get('/', (req, res) => {
-    res.status(400).send({
-        status: "success",
-        data: [
-            {
-                id: 1,
-                username: "fuckyou"
-            }
-        ]
-    })
-});
+router.get('/', controller.index);
 
 router.post('/', (req, res) => {
     res.status(400).send({
