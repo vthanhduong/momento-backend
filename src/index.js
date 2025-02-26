@@ -6,6 +6,7 @@ const bodyParser = require("body-parser")
 const app = express();
 const mysql = require('mysql2');
 const userRoute = require('./routes/user.route');
+const authRoute = require('./routes/auth.route');
 const config = {
   host: process.env.HOST,
   user: process.env.USER,
@@ -34,7 +35,7 @@ app.get("/", (req, res) => {
 
 app.use(bodyParser.json());
 app.use('/user', userRoute);
-
+app.use('/auth', authRoute);
 // Initialize server
 app.listen(5000, () => {
   console.log("Running on port 5000.");
