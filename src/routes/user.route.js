@@ -1,37 +1,11 @@
+const controller = require("../controllers/user.controller");
 const express = require("express");
 const router = express();
 
-router.get('/', (req, res) => {
-    res.status(400).send({
-        status: "success",
-        data: [
-            {
-                id: 1,
-                username: "fuckyou"
-            }
-        ]
-    })
-});
-
-router.post('/', (req, res) => {
-    res.status(400).send({
-        status: "success",
-        message: "User created successfully."
-    })
-});
-
-router.put('/', (req, res) => {
-    res.status(400).send({
-        status: "success",
-        message: "User updated successfully."
-    })
-});
-
-router.delete('/', (req, res) => {
-    res.status(400).send({
-        status: "success",
-        message: "User deleted successfully."
-    })
-});
+router.get('/', controller.index);
+router.get('/:id', controller.findById);
+router.post('/', controller.post);
+router.put('/:id', controller.put);
+router.delete('/:id', controller.delete);
 
 module.exports = router;
