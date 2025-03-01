@@ -4,6 +4,10 @@ const promisify = require("util").promisify;
 const sign = promisify(jwt.sign).bind(jwt);
 const verify = promisify(jwt.verify).bind(jwt);
 
+const bcrypt = require("bcrypt");
+
+const saltRounds = 10;
+
 exports.generateToken = async (payload, secretSignature, tokenLife) => {
     try {
         return await sign({
@@ -28,3 +32,11 @@ exports.verifyToken = async (token, secretSignature) => {
         return null;
     }
 }
+
+exports.hashPassword = async (plainPassword) => {
+    return await bcrypt.hashSync(plainPassword, saltRounds);
+};
+
+exports.checkPassword = async (plainPassword, hash) => {
+    return await bcrypt.compareSync(plainPassword, hash);
+} ;

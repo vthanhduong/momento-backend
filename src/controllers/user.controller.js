@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 module.exports.index = async (req, res) => {
     const users = await prisma.user.findMany({});
-    res.send({
+    res.status(200).json({
         status: "success",
         message: "Get all users successfully.",
         data: users
@@ -16,7 +16,7 @@ module.exports.findById = async (req, res) => {
     const user = await prisma.user.findFirst({
         where: { id: parseInt(id) }
     });
-    res.send({
+    res.status(200).json({
         status: "success",
         message: "Get user by id successfully.",
         data: user
@@ -31,7 +31,7 @@ module.exports.post = async (req, res) => {
             password
         }
     })
-    res.send({
+    res.status(200).json({
         status: "success",
         message: "Create user successfully."
     })
@@ -46,7 +46,7 @@ module.exports.put = async (req, res) => {
             password
         }
     });
-    res.send({
+    res.status(200).json({
         status: "success",
         message: "Update user successfully."
     });

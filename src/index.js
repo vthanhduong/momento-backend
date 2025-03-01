@@ -1,7 +1,8 @@
 require('dotenv').config();
 // Add Express
 const express = require("express");
-const bodyParser = require("body-parser")
+const cors = require("cors");
+const bodyParser = require("body-parser");
 // Initialize Express
 const app = express();
 const mysql = require('mysql2');
@@ -18,6 +19,9 @@ const config = {
     ca: process.env.CA,
   },
 };
+bodyParser.urlencoded({extended: true});
+app.use(bodyParser.json());
+app.use(cors());
 // Create GET request
 app.get("/", (req, res) => {
   var data = '';
@@ -32,8 +36,6 @@ app.get("/", (req, res) => {
       })
   });
 });
-
-app.use(bodyParser.json());
 app.use('/user', userRoute);
 app.use('/auth', authRoute);
 // Initialize server
