@@ -8,6 +8,7 @@ const app = express();
 const mysql = require('mysql2');
 const userRoute = require('./routes/user.route');
 const authRoute = require('./routes/auth.route');
+const imageRoute = require('./routes/image.route');
 const config = {
   host: process.env.HOST,
   user: process.env.USER,
@@ -38,6 +39,7 @@ app.get("/", (req, res) => {
 });
 app.use('/user', userRoute);
 app.use('/auth', authRoute);
+app.use('/image', imageRoute);
 // Initialize server
 app.listen(5000, () => {
   console.log("Running on port 5000.");
