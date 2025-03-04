@@ -3,7 +3,7 @@ const express = require("express");
 const { isAuthorized } = require("../middlewares/auth.middleware");
 const router = express();
 
-router.post('/login', isAuthorized, controller.login);
+router.post('/login', controller.login);
 router.post('/register', controller.register);
 router.put('/password-change');
 module.exports = router;
