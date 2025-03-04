@@ -34,9 +34,9 @@ exports.verifyToken = async (token, secretSignature) => {
 }
 
 exports.hashPassword = async (plainPassword) => {
-    return await bcrypt.hashSync(plainPassword, saltRounds);
+    return await bcrypt.hash(plainPassword, saltRounds);
 };
 
 exports.checkPassword = async (plainPassword, hash) => {
-    return await bcrypt.compareSync(plainPassword, hash);
+    return await bcrypt.compare(plainPassword, hash);
 } ;
