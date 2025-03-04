@@ -19,7 +19,7 @@ exports.generateToken = async (payload, secretSignature, tokenLife) => {
             expiresIn: tokenLife
         },);
     } catch (err) {
-        console.log('holy fuck');
+        console.log(err);
         return null;
     }
 }
