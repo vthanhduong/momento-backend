@@ -13,7 +13,7 @@ module.exports.upload = async (req, res) => {
     try {
         const contentType = req.headers["content-type"];
         if (!contentType || !contentType.includes("multipart/form-data")) {
-            res.status(400).json({
+            return res.status(400).json({
                 status: "unsuccess",
                 message: "Unsupport content type."
             });
@@ -27,12 +27,12 @@ module.exports.upload = async (req, res) => {
                     resource_type: "auto"
                 }, (err, result) => {
                     if (err) {
-                        res.status(400).json({
+                        return res.status(400).json({
                             status: "unsuccess",
                             message: "An error occurred."
                         });
                     }
-                    res.status(200).json({
+                    return res.status(200).json({
                         status: "success",
                         message: "Upload image successfully.",
                         data: {
@@ -42,7 +42,7 @@ module.exports.upload = async (req, res) => {
                 });
                 stream.pipe(uploadStream);
             } catch (err) {
-                res.status(400).json({
+                return res.status(400).json({
                     status: "unsuccess",
                     message: "An error occurred."
                 });
@@ -51,7 +51,7 @@ module.exports.upload = async (req, res) => {
         bb.on("finish", () => {});
         req.pipe(bb);
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             status: "unsuccess",
             message: "An error occurred."
         });
