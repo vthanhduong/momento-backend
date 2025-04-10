@@ -1,4 +1,4 @@
-export const statusCode = {
+const statusCode = {
     // SUCCESS
     OK: 200,
     CREATED: 201,
@@ -15,3 +15,4 @@ export const statusCode = {
     BAD_GATEWAY: 502,
     SERVICE_UNAVAILABLE: 503,
 }
+module.exports = statusCode;
