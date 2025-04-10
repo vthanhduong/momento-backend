@@ -1,10 +1,21 @@
 require('dotenv').config();
 const { PrismaClient } = require("@prisma/client");
 const { generateToken, hashPassword, checkPassword } = require("../methods/auth.methods");
+const { statusCode } = require('../utils/http-status-code.const');
+const { validationResult } = require('express-validator');
 const prisma = new PrismaClient();
 
 module.exports.login = async (req, res) => {
     const { username, password } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        res.status(statusCode.BAD_REQUEST).json({
+            status: "error",
+            message: {
+                errors: errors
+            },
+        });
+    }
     const user = await prisma.user.findFirst({
         where: {
             username
@@ -35,7 +46,27 @@ module.exports.login = async (req, res) => {
 
 module.exports.register = async (req, res) => {
     const { username, password } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        res.status(statusCode.BAD_REQUEST).json({
+            status: "error",
+            message: {
+                errors: errors
+            },
+        });
+    }
     const hash = await hashPassword(password);
+    const existingUser = await prisma.user.findFirst({
+        where: {
+            username
+        }
+    });
+    if (existingUser !== null) {
+        res.status(statusCode.BAD_REQUEST).json({
+            status: "error",
+            message: "This user is existing."
+        });
+    }
     const user = await prisma.user.create({
         data: {
             username: username,
