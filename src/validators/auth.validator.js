@@ -4,7 +4,6 @@ let validateRegisteredUser = () => {
     return [
         check("username", "Username must not be empty").not().isEmpty(),
         check("username", "Username must be an email").isEmail(),
-        check("username", "Username must be alphanumeric").isAlphanumeric(),
         check("username", "Username must be 6 characters minimum length at least").isLength({min: 6}),
         check("password", "Password must not be empty").not().isEmpty(),
         check("password", "Password must be 6 characters minimum length at least").isLength({min: 6}),
