@@ -1,15 +1,15 @@
 require('dotenv').config();
 const { PrismaClient } = require("@prisma/client");
 const { generateToken, hashPassword, checkPassword } = require("../methods/auth.methods");
-const { statusCode } = require('../utils/http-status-code.const');
 const { validationResult } = require('express-validator');
+const statusCode = require('../utils/http-status-code.const');
 const prisma = new PrismaClient();
 
 module.exports.login = async (req, res) => {
     const { username, password } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        res.status(statusCode.BAD_REQUEST).json({
+        return res.status(statusCode.BAD_REQUEST).json({
             status: "error",
             message: {
                 errors: errors
@@ -28,7 +28,7 @@ module.exports.login = async (req, res) => {
             username: username
         };
         const accessToken = await generateToken(dataForAccessedUser, accessTokenSecret, accessTokenLife);
-        res.status(200).json({
+        return res.status(200).json({
             status: "success",
             message: "User authorized.",
             data: {
@@ -37,7 +37,7 @@ module.exports.login = async (req, res) => {
             }
         })
     } else {
-        res.status(401).json({
+        return res.status(401).json({
             status: "unsuccess",
             message: "User unauthorized."
         })
@@ -48,7 +48,7 @@ module.exports.register = async (req, res) => {
     const { username, password } = req.body;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        res.status(statusCode.BAD_REQUEST).json({
+        return res.status(statusCode.BAD_REQUEST).json({
             status: "error",
             message: {
                 errors: errors
@@ -62,7 +62,7 @@ module.exports.register = async (req, res) => {
         }
     });
     if (existingUser !== null) {
-        res.status(statusCode.BAD_REQUEST).json({
+        return res.status(statusCode.BAD_REQUEST).json({
             status: "error",
             message: "This user is existing."
         });
@@ -73,7 +73,7 @@ module.exports.register = async (req, res) => {
             password: hash
         }
     });
-    res.status(200).json({
+    return res.status(200).json({
         status: "success",
         message: "User registered successfully."
     });
