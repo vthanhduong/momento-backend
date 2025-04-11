@@ -5,42 +5,25 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 // Initialize Express
 const app = express();
-const mysql = require('mysql2');
+// Import routes
 const userRoute = require('./routes/user.route');
 const authRoute = require('./routes/auth.route');
-// const imageRoute = require('./routes/image.route');
 const momentRoute = require("./routes/moment.route");
-const config = {
-  host: process.env.HOST,
-  user: process.env.USER,
-  password: process.env.PASSWORD,
-  database: process.env.DATABASE_NAME,
-  port: process.env.DATABASE_PORT,
-  ssl: {
-    rejectUnauthorized: false,
-    ca: process.env.CA,
-  },
-};
+const statusCode = require('./utils/http-status-code.const');
+// Validator config
 bodyParser.urlencoded({extended: true});
 app.use(bodyParser.json());
 app.use(cors());
-// Create GET request
+
 app.get("/", (req, res) => {
-  var data = '';
-  const conn = mysql.createConnection(config);
-  conn.execute('SELECT VERSION() AS version', [], (err, result) => {
-      if (err) throw err;
-      data = result[0].version;
-      conn.end();
-      res.status(400).json({
-      status: "success",
-      message: data,
-      })
+  return res.status(statusCode.OK).json({
+    status: "success",
+    message: "The service is live.",
   });
 });
+
 app.use('/user', userRoute);
 app.use('/auth', authRoute);
-// app.use('/image', imageRoute);
 app.use('/moment', momentRoute);
 // Initialize server
 app.listen(5000, () => {
