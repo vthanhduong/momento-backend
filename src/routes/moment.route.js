@@ -1,6 +1,7 @@
 const controller = require("../controllers/moment.controller");
 const express = require("express");
 const { isAuthorized } = require("../middlewares/auth.middleware");
+const { validate } = require("../validators/moment.validator");
 const router = express();
 
 router.post('/upload', isAuthorized, controller.upload)
