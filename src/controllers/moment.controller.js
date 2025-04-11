@@ -1,13 +1,16 @@
 const cloudinary = require("cloudinary").v2;
 const busboy = require("busboy");
-
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+const { v4: uuidv4 } = require("uuid");
+const { verifyToken } = require("../methods/auth.methods");
 require("dotenv").config();
-
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
+const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
 
 module.exports.upload = async (req, res) => {
     try {
@@ -25,19 +28,26 @@ module.exports.upload = async (req, res) => {
                 const uploadStream = cloudinary.uploader.upload_stream({
                     folder: "momento-archive",
                     resource_type: "auto"
-                }, (err, result) => {
+                }, async (err, result) => {
                     if (err) {
                         return res.status(400).json({
                             status: "error",
                             message: "An error occurred."
                         });
                     }
+                    const uuid = uuidv4();
+                    const verificationToken = await verifyToken(req.headers.authorization, accessTokenSecret);
+                    const moment = await prisma.moment.create({
+                        data: {
+                            id: uuid,
+                            userId: verificationToken.payload.user.id,
+                            url: result.secure_url,
+                        }
+                    });
                     return res.status(200).json({
                         status: "success",
-                        message: "Upload image successfully.",
-                        data: {
-                            url: result.secure_url
-                        }
+                        message: "Upload moment successfully.",
+                        data: moment,
                     });
                 });
                 stream.pipe(uploadStream);
@@ -56,4 +66,23 @@ module.exports.upload = async (req, res) => {
             message: "An error occurred."
         });
     }
+}
+
+module.exports.getSelfMoments = async (req, res) => {
+    const verificationToken = await verifyToken(req.headers.authorization, accessTokenSecret);
+    const selfMoments = await prisma.moment.findMany({
+        orderBy: [
+            {
+                createdAt: 'desc',
+            }
+        ],
+        where: {
+            userId: verificationToken.payload.user.id
+        }
+    });
+    return res.status(200).json({
+        status: "success",
+        message: "Get self moments successfully.",
+        data: selfMoments,
+    });
 }

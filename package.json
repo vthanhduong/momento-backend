@@ -16,7 +16,8 @@
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
     "global": "^4.4.0",
-    "prisma": "^6.4.1"
+    "prisma": "^6.4.1",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.5",
