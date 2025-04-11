@@ -4,6 +4,7 @@ const { generateToken, hashPassword, checkPassword } = require("../methods/auth.
 const { validationResult } = require('express-validator');
 const statusCode = require('../utils/http-status-code.const');
 const prisma = new PrismaClient();
+const { v4: uuidv4 } = require("uuid");
 
 module.exports.login = async (req, res) => {
     const { username, password } = req.body;
@@ -25,11 +26,11 @@ module.exports.login = async (req, res) => {
         const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET;
         const accessTokenLife = process.env.ACCESS_TOKEN_LIFE;
         const dataForAccessedUser = {
-            username: username
+            user: user
         };
         const accessToken = await generateToken(dataForAccessedUser, accessTokenSecret, accessTokenLife);
         return res.status(200).json({
-            status: "success",
+            status: "authorized",
             message: "User authorized.",
             data: {
                 token: accessToken,
@@ -38,7 +39,7 @@ module.exports.login = async (req, res) => {
         })
     } else {
         return res.status(401).json({
-            status: "unsuccess",
+            status: "unauthorized",
             message: "User unauthorized."
         })
     }
@@ -67,14 +68,17 @@ module.exports.register = async (req, res) => {
             message: "This user is existing."
         });
     }
+    const uuid = uuidv4();
     const user = await prisma.user.create({
         data: {
+            id: uuid,
             username: username,
             password: hash
         }
     });
     return res.status(200).json({
         status: "success",
-        message: "User registered successfully."
+        message: "User registered successfully.",
+        data: user
     });
 }

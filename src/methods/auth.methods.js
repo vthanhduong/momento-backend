@@ -19,7 +19,6 @@ exports.generateToken = async (payload, secretSignature, tokenLife) => {
             expiresIn: tokenLife
         },);
     } catch (err) {
-        console.log(err);
         return null;
     }
 }
@@ -28,7 +27,6 @@ exports.verifyToken = async (token, secretSignature) => {
     try {
         return await verify(token, secretSignature);
     } catch (err) {
-        console.log('verify failed');
         return null;
     }
 }
