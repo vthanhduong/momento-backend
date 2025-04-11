@@ -21,3 +21,8 @@ exports.isAuthorized = async (req, res, next) => {
     }
     return next();
 }
+
+exports.isGoldMember = async (req, res, next) => {
+    // ready to implement
+    return next();
+}
