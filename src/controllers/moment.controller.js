@@ -88,11 +88,9 @@ module.exports.upload = async (req, res) => {
 module.exports.getSelfMoments = async (req, res) => {
     const verificationToken = await verifyToken(req.headers.authorization, accessTokenSecret);
     const selfMoments = await prisma.moment.findMany({
-        orderBy: [
-            {
-                createdAt: 'desc',
-            }
-        ],
+        orderBy: {
+            createdAt: 'desc',
+        },
         where: {
             userId: verificationToken.payload.user.id
         }
@@ -102,4 +100,12 @@ module.exports.getSelfMoments = async (req, res) => {
         message: "Get self moments successfully.",
         data: selfMoments,
     });
+}
+
+module.exports.getFriendMoments = async (req, res) => {
+
+}
+
+module.exports.getAllMoments = async (req, res) => {
+
 }
