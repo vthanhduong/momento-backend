@@ -17,7 +17,7 @@ module.exports.addFriendWith = async (req, res) => {
     if (id === verificationToken.payload.user.id) {
         return res.status(statusCode.BAD_REQUEST).json({
             status: "error",
-            message: "địt con mẹ mày ai lại tự kết bạn với chính mình????"
+            message: "You can't send yourself a friend request."
         });
     }
     if (friendship) {
@@ -101,11 +101,74 @@ module.exports.acceptFriend = async (req, res) => {
 }
 
 module.exports.getFriends = async (req, res) => {
-
+    const verificationToken = await verifyToken(req.headers.authorization, accessTokenSecret);
+    const id = verificationToken.payload.user.id;
+    const friends = await prisma.friendship.findMany({
+        where: {
+            userId: id,
+        },
+        select: {
+            friend: true,
+        },
+    });
+    return res.status(statusCode.OK).json({
+        status: "success",
+        message: "Get friend list successfully.",
+        data: friends,
+    });
 }
 
 module.exports.unfriend = async (req, res) => {
-
+    const verificationToken = await verifyToken(req.headers.authorization, accessTokenSecret);
+    const userId = verificationToken.payload.user.id;
+    const { id } = req.params;
+    if (id === userId) {
+        return res.status(statusCode.BAD_REQUEST).json({
+            status: "error",
+            message: "Can't unfriend with yourself.",
+        });
+    }
+    const friend = await prisma.user.findFirst({
+        where: {
+            id
+        }
+    });
+    if (!friend) {
+        return res.status(statusCode.NOT_FOUND).json({
+            status: "error",
+            message: "User not found."
+        });
+    }
+    await prisma.friendship.deleteMany({
+        where: {
+            OR: [
+                {
+                    AND: [
+                        {
+                            userId: id 
+                        },
+                        {
+                            friendId: userId
+                        }
+                    ]
+                },
+                {
+                    AND: [
+                        {
+                            userId: userId 
+                        },
+                        {
+                            friendId: id
+                        }
+                    ]
+                },
+            ]
+        }
+    });
+    return res.status(statusCode.OK).json({
+        status: "success",
+        message: "Unfriend successfully.",
+    });
 }
 
 module.exports.getFriendInvitations = async (req, res) => {
@@ -114,7 +177,10 @@ module.exports.getFriendInvitations = async (req, res) => {
         where: {
             friendId: verificationToken.payload.user.id,
             isInvitation: 1,
-        }
+        },
+        include: {
+            user: true,
+        },
     });
     return res.status(statusCode.OK).json({
         status: "success",
@@ -124,5 +190,20 @@ module.exports.getFriendInvitations = async (req, res) => {
 }
 
 module.exports.rejectInvitations = async (req, res) => {
-    
+    const { id } = req.params;
+    const deletedRecords = await prisma.friendship.deleteMany({
+        where: {
+            id,
+        },
+    });
+    if (deletedRecords === 0) {
+        return res.status(statusCode.NOT_FOUND).json({
+            status: "error",
+            message: "Invitation not found.",
+        });
+    }
+    return res.status(statusCode.OK).json({
+        status: "success",
+        message: "Invitation rejected.",
+    });
 }

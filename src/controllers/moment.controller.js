@@ -103,9 +103,75 @@ module.exports.getSelfMoments = async (req, res) => {
 }
 
 module.exports.getFriendMoments = async (req, res) => {
-
+    const { id } = req.params;
+    const moments = await prisma.user.findFirst({
+        where: {
+            id,
+        },
+        select: {
+            userMoments: true,
+        },
+    });
+    if (!moments) {
+        return res.status(statusCode.NOT_FOUND).json({
+            status: "error",
+            message: "User not found.",
+        });
+    }
+    return res.status(statusCode.OK).json({
+        status: "success",
+        message: "Get friend moments successfully.",
+        data: moments,
+    });
 }
 
 module.exports.getAllMoments = async (req, res) => {
+    const verificationToken = await verifyToken(req.headers.authorization, accessTokenSecret);
+    const id = verificationToken.payload.user.id;
+    const moments = await prisma.moment.findMany({
+        where: {
+            OR: [
+                {
+                    user: {
+                        friendships: {
+                            some: {
+                                friendId: id,
+                            }
+                        }
+                    }
+                },
+                {
+                    userId: id,
+                }
+            ],
+        },
+        orderBy: {
+            createdAt: 'desc',
+        }
+    });
+    return res.status(statusCode.OK).json({
+        data: moments
+    });
+}
 
+module.exports.deleteMoment = async (req, res) => {
+    const verificationToken = await verifyToken(req.headers.authorization, accessTokenSecret);
+    const userId = verificationToken.payload.user.id;
+    const { id } = req.params;
+    const deletedMoment = await prisma.moment.deleteMany({
+        where: {
+            userId: userId,
+            id,
+        }
+    });
+    if (deletedMoment.count === 0) {
+        return res.status(statusCode.NOT_FOUND).json({
+            status: "error",
+            message: "Moment not found.",
+        });
+    }
+    return res.status(statusCode.OK).json({
+        status: "success",
+        message: "Deleted moment successfully.",
+    });
 }
