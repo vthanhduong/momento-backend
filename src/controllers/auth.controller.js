@@ -50,9 +50,8 @@ module.exports.register = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(statusCode.BAD_REQUEST).json({
             status: "error",
-            message: {
-                errors: errors
-            },
+            message: "Validate errors.",
+            data: errors,
         });
     }
     const hash = await hashPassword(password);
