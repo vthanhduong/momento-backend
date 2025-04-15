@@ -89,7 +89,7 @@ module.exports.refreshToken = async (req, res) => {
     const accessTokenFromHeader = req.headers.authorization;
     const verification = await verifyToken(accessTokenFromHeader, accessTokenSecret);
     if (verification !== null) {
-        const accessToken = await generateToken(verification.payload, accessTokenSecret, accessTokenLife);
+        const accessToken = await generateToken(verification.payload.user, accessTokenSecret, accessTokenLife);
         return res.status(statusCode.OK).json({
             status: "authorized",
             message: "User authorized.",
