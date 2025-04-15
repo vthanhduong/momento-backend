@@ -95,7 +95,7 @@ module.exports.refreshToken = async (req, res) => {
             message: "User authorized.",
             data: {
                 token: accessToken,
-                user: verification.payload
+                user: verification.payload.user
             }
         });
     } else {
